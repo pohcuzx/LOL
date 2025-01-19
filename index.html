@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michael Anderson's Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .video-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin: 20px 0;
+            min-height: 500px;
+        }
+        .video-info {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            height: fit-content;
+            display: none;
+        }
+        .video-container {
+            width: 480px;
+            margin: 0 auto;
+        }
+        .video-container video {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .video-container video:hover {
+            transform: scale(1.02);
+        }
+        .copyright {
+            background-color: #ffebee;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #ffcdd2;
+        }
+        .copyright-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2;
+        }
+        .copyright-title {
+            color: #d32f2f;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .copyright-content {
+            line-height: 1.6;
+        }
+        .dmca-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ffcdd2;
+        }
+        .dmca-link {
+            display: inline-block;
+            background-color: #d32f2f;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .dmca-link:hover {
+            background-color: #b71c1c;
+        }
+        .metadata {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 28px;
+            text-align: center;
+        }
+        .info-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 20px;
+        }
+        .info-section:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .info-section h3 {
+            color: #2196F3;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .info-section p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        .info-section ul {
+            margin: 10px 0 10px 25px;
+            padding: 0;
+        }
+        .info-section li {
+            margin-bottom: 8px;
+        }
+        @media (max-width: 768px) {
+            .video-layout {
+                grid-template-columns: 1fr;
+            }
+            .video-info {
+                order: 2;
+            }
+        }
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-content {
+            position: relative;
+            display: flex;
+            width: 1200px;
+            height: auto;
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: visible;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: lightboxIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes lightboxIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .video-side {
+            width: 480px;
+            padding: 25px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            background: linear-gradient(45deg, #000000, #1a1a1a);
+        }
+        .video-side video {
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            width: 100%;
+            height: auto;
+        }
+        .info-side {
+            width: 650px;
+            padding: 35px 45px;
+            background: #ffffff;
+            border-radius: 0 15px 15px 0;
+            overflow: visible;
+        }
+        .info-side::-webkit-scrollbar {
+            width: 8px;
+        }
+        .info-side::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .info-side::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .info-side::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .info-section {
+            padding: 20px;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+        .info-section h3 {
+            color: #1565C0;
+            font-size: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .info-section p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 10px 0;
+            color: #333;
+        }
+        .info-section ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .info-section li {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 8px 0;
+            color: #333;
+        }
+        .dmca-section {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+            border: 1px solid #ffebee;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1010;
+        }
+        .close-lightbox:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Top Lane Epic Battle: The Guardian Tree vs The Desert Butcher</h1>
+        
+        <div class="video-layout">
+            <div class="video-container">
+                <video id="mainVideo">
+                    <source src="video.mp4" type="video/mp4">
+                    Your browser does not support video playback.
+                </video>
+            </div>
+        </div>
+
+        <!-- Lightbox -->
+        <div class="lightbox" id="videoLightbox">
+            <div class="close-lightbox" onclick="closeLightbox()">×</div>
+            <div class="lightbox-content">
+                <div class="video-side">
+                    <video id="lightboxVideo" controls>
+                        <source src="video.mp4" type="video/mp4">
+                        Your browser does not support video playback.
+                    </video>
+                </div>
+                <div class="info-side">
+                    <div class="info-section">
+                        <h3>Video Description</h3>
+                        <p>A recording of an intense 1vs1 top lane match in League of Legends between two champions:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Maokai - The Guardian Tree</li>
+                            <li>Renekton - The Desert Butcher</li>
+                        </ul>
+                        <p style="margin-top: 10px;">This is an exciting duel between two champions with contrasting playstyles: Maokai with his defensive and sustain abilities, facing off against Renekton - a champion focused on aggression and lane dominance.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Owner Information</h3>
+                        <p><strong>Author:</strong> Michael Anderson</p>
+                        <p><strong>Posted on:</strong> March 15, 2021</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Copyright Notice & DMCA</h3>
+                        <div class="copyright-content">
+                            <p>This content is protected by copyright law and intellectual property regulations. 2021 Michael Anderson.</p>
+                            <p>Any copying, distribution, broadcasting, or modification of content without written permission is strictly prohibited and may result in legal consequences.</p>
+                            
+                            <div class="dmca-section">
+                                <p><strong>Report Copyright Infringement:</strong></p>
+                                <p>If you discover any copyright infringement, please send an official DMCA notice to our Copyright Protection Department via email: <a href="mailto:legal.dmca.notice.legal@gmail.com" style="color: #d32f2f; text-decoration: none;">legal.dmca.notice.legal@gmail.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('mainVideo');
+        const lightbox = document.getElementById('videoLightbox');
+        const lightboxVideo = document.getElementById('lightboxVideo');
+
+        // Add controls to video
+        video.controls = true;
+
+        // Open lightbox when clicking on video
+        video.addEventListener('click', function(e) {
+            e.preventDefault();
+            lightbox.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent page scrolling
+            lightboxVideo.currentTime = video.currentTime; // Sync video time
+            if (!video.paused) {
+                lightboxVideo.play();
+            }
+        });
+
+        // Close lightbox
+        function closeLightbox() {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            video.currentTime = lightboxVideo.currentTime;
+            if (!lightboxVideo.paused) {
+                video.play();
+            }
+        }
+
+        // Close lightbox when clicking outside
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Close lightbox when pressing ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.style.display === 'block') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
